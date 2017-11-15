@@ -1,0 +1,42 @@
+version: "3.1"
+services:
+    db:
+      image: mysql:5.7
+      volumes:
+        - ./db_files:/var/lib/mysql
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: 12345
+        MYSQL_DATABASE: rshop 
+        MYSQL_USER: root
+        MYSQL_PASSWORD: 12345
+      ports:
+       - 3306:3306
+
+    p71:
+      depends_on:
+        - db
+      image: php:7.1
+      build:
+       context: .
+       dockerfile: ./php7/Dockerfile
+      links:
+       - db
+      volumes:
+       - ./www:/var/www/html
+       - ./php7/php.ini:/usr/local/etc/php/conf.d/php.ini
+       - ./php7/virtualhost.conf:/etc/apache2/sites-available/virtualhost-php71.conf
+      environment:
+        DB_HOST: db:3308
+        DB_PASSWORD: 12345
+      ports:
+       - 80:80
+
+    pma:
+      depends_on:
+        - db
+      image: phpmyadmin/phpmyadmin
+      ports:
+        - "8080:80"
+      volumes:
+       - ./phpmyadmin:/sessions
