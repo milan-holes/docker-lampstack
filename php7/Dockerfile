@@ -8,7 +8,7 @@ RUN a2dissite 000-default
 COPY ./php7/php.ini /usr/local/etc/php/conf.d/php.ini
 
 # Setup virtual hosts
-COPY ./php7/virtualhost.conf /etc/apache2/sites-enabled/virtualhost-php71.conf
+COPY ./php7/virtualhost.conf /etc/apache2/sites-available/virtualhost-php71.conf
 RUN a2ensite virtualhost-php71
 
 # Link log files
@@ -20,23 +20,20 @@ RUN apt-get update
 
 # Install libraries
 RUN apt-get install -y \
-        libicu-dev \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libmcrypt-dev \
         libpng12-dev \
         libpng-dev \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) \
         bcmath \
-        gd \
         iconv \
-        intl \
         mcrypt \
         mysqli \
         opcache \
         pdo_mysql \
-        calendar
+        calendar \
+    && docker-php-ext-enable calendar
 
 # Install gd
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \

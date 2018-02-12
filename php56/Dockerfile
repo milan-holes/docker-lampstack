@@ -5,7 +5,7 @@ RUN a2enmod rewrite headers
 RUN a2dissite 000-default
 
 # Setup virtual hosts
-COPY ./php56/virtualhost.conf /etc/apache2/sites-enabled/virtualhost-php56.conf
+COPY ./php56/virtualhost.conf /etc/apache2/sites-available/virtualhost-php56.conf
 RUN a2ensite virtualhost-php56
 
 # Copy php.ini
@@ -28,4 +28,5 @@ RUN apt-get install -y \
         mysql \
         mysqli \
         pdo_mysql \
-        calendar
+        calendar \
+    && docker-php-ext-enable calendar
