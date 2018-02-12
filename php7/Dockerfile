@@ -1,25 +1,24 @@
-FROM php:7.1-apache
-RUN apt-get update && apt-get install -y \
-    && docker-php-ext-install -j$(nproc) iconv mcrypt mysqli \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd
+FROM php:7.1-apache 
 
+# Enable mod_rewrite
 RUN a2enmod rewrite headers
-
 RUN a2dissite 000-default
 
+# Copy php.ini
 COPY ./php7/php.ini /usr/local/etc/php/conf.d/php.ini
 
-COPY ./php7/virtualhost.conf /etc/apache2/sites-available/virtualhost-php71.conf
+# Setup virtual hosts
+COPY ./php7/virtualhost.conf /etc/apache2/sites-enabled/virtualhost-php71.conf
 RUN a2ensite virtualhost-php71
 
+# Link log files
 RUN touch /var/www/71_error.log /var/www/71_access.log
 RUN chown www-data:www-data /var/www/71_error.log /var/www/71_access.log
 
-RUN apt-get update && apt-get install -y zlib1g-dev libicu-dev g++
-RUN docker-php-ext-configure intl
-RUN docker-php-ext-install intl
+# Update
+RUN apt-get update
 
+# Install libraries
 RUN apt-get install -y \
         libicu-dev \
         libfreetype6-dev \
@@ -36,4 +35,20 @@ RUN apt-get install -y \
         mcrypt \
         mysqli \
         opcache \
-        pdo_mysql
+        pdo_mysql \
+        calendar
+
+# Install gd
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install -j$(nproc) gd
+
+# Install intl
+RUN apt-get update && apt-get install -y zlib1g-dev libicu-dev g++
+RUN docker-php-ext-configure intl
+RUN docker-php-ext-install intl
+
+# Install Memcached
+RUN apt-get update \
+  && apt-get install -y libmemcached-dev zlib1g-dev \
+  && pecl install memcached \
+  && docker-php-ext-enable memcached

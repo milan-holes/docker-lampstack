@@ -5,6 +5,7 @@ services:
       volumes:
         - ./db_files:/var/lib/mysql
       restart: always
+      command: --sql_mode=""
       environment:
         MYSQL_ROOT_PASSWORD: 12345
         MYSQL_DATABASE: rshop 
@@ -12,6 +13,24 @@ services:
         MYSQL_PASSWORD: 12345
       ports:
        - 3306:3306
+
+    p56:
+      depends_on:
+        - db
+      image: php:5.6
+      build:
+       context: .
+       dockerfile: ./php56/Dockerfile
+      links:
+       - db
+      volumes:
+       - ./www:/var/www/html
+       - ./php56/php.ini:/usr/local/etc/php/conf.d/php.ini
+      environment:
+        DB_HOST: db:3306
+        DB_PASSWORD: 12345
+      ports:
+       - 81:80
 
     p71:
       depends_on:
@@ -22,12 +41,14 @@ services:
        dockerfile: ./php7/Dockerfile
       links:
        - db
+       - memcached:memcached
+       - elasticsearch:elasticsearch
       volumes:
        - ./www:/var/www/html
        - ./php7/php.ini:/usr/local/etc/php/conf.d/php.ini
        - ./php7/virtualhost.conf:/etc/apache2/sites-available/virtualhost-php71.conf
       environment:
-        DB_HOST: db:3308
+        DB_HOST: db:3306
         DB_PASSWORD: 12345
       ports:
        - 80:80
@@ -40,3 +61,14 @@ services:
         - "8080:80"
       volumes:
        - ./phpmyadmin:/sessions
+
+    memcached:
+        image: memcached
+        ports:
+          - "11211:11211"
+
+    elasticsearch:
+      image: elasticsearch:2
+      ports:
+        - "9200:9200"
+        - "9300:9300"
