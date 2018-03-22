@@ -25,6 +25,12 @@ RUN apt-get install -y \
         libmcrypt-dev \
         libpng12-dev \
         libpng-dev \
+        git \
+        zip \
+        unzip \
+        vim \
+        mysql-client \
+        net-tools \
     && docker-php-ext-install -j$(nproc) \
         bcmath \
         iconv \
@@ -49,3 +55,16 @@ RUN apt-get update \
   && apt-get install -y libmemcached-dev zlib1g-dev \
   && pecl install memcached \
   && docker-php-ext-enable memcached
+
+# Install nodejs
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
+    && apt-get update && apt-get install -y \
+        nodejs 
+
+# Install Gulp & Grunt
+RUN npm install -g grunt gulp
+
+# Install composer
+RUN curl -s https://getcomposer.org/installer > composer-setup.php \
+    && php composer-setup.php --install-dir=/usr/bin --filename=composer \
+    && rm composer-setup.php 
