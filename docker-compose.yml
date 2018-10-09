@@ -1,20 +1,22 @@
 version: "3.1"
 services:
     db:
+      container_name: 'rshop_mysql'
       image: mysql:5.7
       volumes:
-        - ./db_files:/var/lib/mysql
+        - ${DB_FILES}
       restart: always
       command: --sql_mode=""
       environment:
-        MYSQL_ROOT_PASSWORD: 12345
-        MYSQL_DATABASE: rshop 
-        MYSQL_USER: root
-        MYSQL_PASSWORD: 12345
+        MYSQL_ROOT_PASSWORD: ${DB_PASS}
+        MYSQL_DATABASE: ${DB_DATABASE} 
+        MYSQL_USER: ${DB_ROOT}
+        MYSQL_PASSWORD: ${DB_PASS}
       ports:
-       - 3306:3306
+       - ${DB_PORT}:3306
 
     p56:
+      container_name: 'rshop_php56'
       depends_on:
         - db
       image: php:5.6
@@ -24,15 +26,16 @@ services:
       links:
        - db
       volumes:
-       - ./www:/var/www/html
+       - ${PHP56_FILES}
        - ./php56/php.ini:/usr/local/etc/php/conf.d/php.ini
       environment:
-        DB_HOST: db:3306
-        DB_PASSWORD: 12345
+        DB_HOST: db:${DB_PORT}
+        DB_PASSWORD: ${DB_PASS}
       ports:
-       - 81:80
+       - ${PHP56_PORT}:80
 
     p71:
+      container_name: 'rshop_php71'
       depends_on:
         - db
       restart: always
@@ -45,35 +48,41 @@ services:
        - memcached:memcached
        - elasticsearch:elasticsearch
       volumes:
-       - ./www:/var/www/html
+       - ${PHP71_FILES}
        - ./php7/php.ini:/usr/local/etc/php/conf.d/php.ini
        - ./php7/virtualhost.conf:/etc/apache2/sites-available/virtualhost-php71.conf
-       - $HOME/.ssh:/root/.ssh:ro
       environment:
-        DB_HOST: db:3306
-        DB_PASSWORD: 12345
+        DB_HOST: db:${DB_PORT}
+        DB_PASSWORD: ${DB_PASS}
       ports:
-       - 80:80
+       - ${PHP71_PORT}:80
 
     pma:
+      container_name: 'rshop_phpmyadmin'
       depends_on:
         - db
       restart: always
       image: phpmyadmin/phpmyadmin
       ports:
-        - "8080:80"
+        - "${PHPMY_PORT}:80"
       volumes:
        - ./phpmyadmin:/sessions
 
     memcached:
+        container_name: 'rshop_memcached'
         image: memcached
         restart: always
         ports:
-          - "11211:11211"
+          - "${MEM_PORT}:11211"
 
     elasticsearch:
+      container_name: 'rshop_elasticsearch'
       image: docker.elastic.co/elasticsearch/elasticsearch:6.2.2
       restart: always
       ports:
-        - "9200:9200"
-        - "9300:9300"
+        - "${ELASTIC_PORT1}:9200"
+        - "${ELASTIC_PORT2}:9300"
+
+volumes:
+   rshop-sync:
+     external: true

@@ -1,4 +1,8 @@
+.env
 .DS_Store
 db_files/*
 phpmyadmin/*
 www/*
+php56/virtualhost.conf
+php7/virtualhost.conf
+.docker-sync

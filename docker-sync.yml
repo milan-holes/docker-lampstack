@@ -1,0 +1,28 @@
+version: "2"
+options:
+  verbose: true
+syncs:
+   rshop-sync:
+     notify_terminal: ${SYNC_NOTIFY}
+     src: '${SYNC_FILES}'
+     sync_strategy: '${SYNC_STRATEGY}'
+     sync_excludes: [
+        '.sass-cache', 'sass', 'sass-cache', '*.scss', '*.sass', '*.less',
+        'composer.json', 'composer.lock', 
+        'bower.json', 'package.json', 'package-lock.json',
+        'Gruntfile*', '
+        bower_components', 'node_modules', 
+        '.gitignore', '.git', '.gitattributes',
+        '*.coffee', '.DS_Store', 
+        '.vscode', '.idea', '.editorconfig',
+        'tmp', 'logs', 'files', 'README.md'
+     ]
+     sync_args:
+       - "-prefer newer"
+       - "-ignore='Path .git'"
+       - "-ignore='BelowPath .git'"
+     sync_prefer: src
+     watch_args: '-v'
+  #mysql-sync: 
+  #  src: './db_files/'
+  #  sync_excludes: ['.DS_Store']

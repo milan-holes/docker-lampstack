@@ -1,1 +1,1 @@
-docker exec -i rshopvirtual_db_1 mysql -uroot -p12345 $1 < $2
+docker exec -i rshop_mysql mysql -uroot -p12345 $1 < $2
