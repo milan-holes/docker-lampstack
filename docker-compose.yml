@@ -19,10 +19,7 @@ services:
       container_name: 'rshop_php56'
       depends_on:
         - db
-      image: php:5.6
-      build:
-       context: .
-       dockerfile: ./php56/Dockerfile
+      build: ./php56
       links:
        - db
       volumes:
@@ -39,10 +36,7 @@ services:
       depends_on:
         - db
       restart: always
-      image: php:7.1
-      build:
-       context: .
-       dockerfile: ./php7/Dockerfile
+      build: ./php7
       links:
        - db
        - memcached:memcached
@@ -83,6 +77,6 @@ services:
         - "${ELASTIC_PORT1}:9200"
         - "${ELASTIC_PORT2}:9300"
 
-volumes:
-   rshop-sync:
-     external: true
+# volumes:
+#    rshop-sync:
+#      external: true

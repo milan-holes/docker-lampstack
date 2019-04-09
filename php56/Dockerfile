@@ -5,11 +5,11 @@ RUN a2enmod rewrite headers
 RUN a2dissite 000-default
 
 # Setup virtual hosts
-COPY ./php56/virtualhost.conf /etc/apache2/sites-available/virtualhost-php56.conf
+COPY ./virtualhost.conf /etc/apache2/sites-available/virtualhost-php56.conf
 RUN a2ensite virtualhost-php56
 
 # Copy php.ini
-COPY ./php56/php.ini /usr/local/etc/php/conf.d/php.ini
+COPY ./php.ini /usr/local/etc/php/conf.d/php.ini
 
 # Link log files
 RUN touch /var/www/56_error.log /var/www/56_access.log
