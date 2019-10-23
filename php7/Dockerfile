@@ -28,7 +28,7 @@ RUN apt-get install -y \
         zip \
         unzip \
         vim \
-        mysql-client \
+        mariadb-client \
         net-tools \
         gnupg \
     && docker-php-ext-install -j$(nproc) \
@@ -73,10 +73,11 @@ RUN apt-get update \
 # Install nodejs
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
     && apt-get update && apt-get install -y \
-        nodejs 
+        nodejs \
+	    npm
 
 # Install Gulp & Grunt
-RUN npm install -g grunt gulp
+RUN npm install grunt gulp -g
 
 # Install composer
 RUN curl -s https://getcomposer.org/installer > composer-setup.php \
