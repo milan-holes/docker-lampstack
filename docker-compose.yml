@@ -65,14 +65,12 @@ services:
     memcached:
         container_name: 'rshop_memcached'
         image: memcached
-        restart: always
         ports:
           - "${MEM_PORT}:11211"
 
     elasticsearch:
       container_name: 'rshop_elasticsearch'
       image: docker.elastic.co/elasticsearch/elasticsearch:6.2.2
-      restart: always
       ports:
         - "${ELASTIC_PORT1}:9200"
         - "${ELASTIC_PORT2}:9300"

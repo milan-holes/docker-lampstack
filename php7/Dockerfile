@@ -28,7 +28,6 @@ RUN apt-get install -y \
         zip \
         unzip \
         vim \
-        mysql-client \
         net-tools \
         gnupg \
     && docker-php-ext-install -j$(nproc) \
@@ -70,10 +69,15 @@ RUN apt-get update \
   && pecl install memcached \
   && docker-php-ext-enable memcached
 
+# Enable SOAP
+RUN apt-get install -y \
+     libxml2-dev \
+  && apt-get clean -y \
+  && docker-php-ext-install soap    
+
 # Install nodejs
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
-    && apt-get update && apt-get install -y \
-        nodejs 
+    && apt-get install -y nodejs npm
 
 # Install Gulp & Grunt
 RUN npm install -g grunt gulp
