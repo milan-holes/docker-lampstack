@@ -28,6 +28,10 @@ RUN apt-get install -y \
         zip \
         unzip \
         vim \
+<<<<<<< HEAD
+=======
+        mariadb-client \
+>>>>>>> 3ea7027ff09ed83c25aa7bebbd4e2220f0884a86
         net-tools \
         gnupg \
     && docker-php-ext-install -j$(nproc) \
@@ -77,10 +81,16 @@ RUN apt-get install -y \
 
 # Install nodejs
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
+<<<<<<< HEAD
     && apt-get install -y nodejs npm
+=======
+    && apt-get update && apt-get install -y \
+        nodejs \
+	    npm
+>>>>>>> 3ea7027ff09ed83c25aa7bebbd4e2220f0884a86
 
 # Install Gulp & Grunt
-RUN npm install -g grunt gulp
+RUN npm install grunt gulp -g
 
 # Install composer
 RUN curl -s https://getcomposer.org/installer > composer-setup.php \
